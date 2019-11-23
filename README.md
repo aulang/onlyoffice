@@ -26,97 +26,101 @@ docker exec -it documentserver /bin/bash
 ```
 
 ### 3. 配置安全令牌
-配置文件路径/etc/onlyoffice/documentserver/local.json
-```json
-{
-  "services": {
-    "CoAuthoring": {
-      "sql": {
-        "dbHost": "localhost",
-        "dbName": "onlyoffice",
-        "dbUser": "onlyoffice",
-        "dbPass": "onlyoffice"
-      },
-      "redis": {
-        "host": "localhost"
-      },
-      "token": {
-        "enable": {
-          "request": {
-            "inbox": false,
-            "outbox": false
+1. 进入容器修改文件/etc/onlyoffice/documentserver/local.json
+    ```json
+    {
+      "services": {
+        "CoAuthoring": {
+          "sql": {
+            "dbHost": "localhost",
+            "dbName": "onlyoffice",
+            "dbUser": "onlyoffice",
+            "dbPass": "onlyoffice"
           },
-          "browser": false
-        },
-        "inbox": {
-          "header": "Authorization"
-        },
-        "outbox": {
-          "header": "Authorization"
+          "redis": {
+            "host": "localhost"
+          },
+          "token": {
+            "enable": {
+              "request": {
+                "inbox": false,
+                "outbox": false
+              },
+              "browser": false
+            },
+            "inbox": {
+              "header": "Authorization"
+            },
+            "outbox": {
+              "header": "Authorization"
+            }
+          },
+          "secret": {
+            "inbox": {
+              "string": "secret"
+            },
+            "outbox": {
+              "string": "secret"
+            },
+            "session": {
+              "string": "secret"
+            }
+          }
         }
       },
-      "secret": {
-        "inbox": {
-          "string": "secret"
-        },
-        "outbox": {
-          "string": "secret"
-        },
-        "session": {
-          "string": "secret"
-        }
+      "rabbitmq": {
+        "url": "amqp://guest:guest@localhost"
       }
     }
-  },
-  "rabbitmq": {
-    "url": "amqp://guest:guest@localhost"
-  }
-}
-```
-修改为
-```json
-{
-  "services": {
-    "CoAuthoring": {
-      "sql": {
-        "dbHost": "localhost",
-        "dbName": "onlyoffice",
-        "dbUser": "onlyoffice",
-        "dbPass": "onlyoffice"
-      },
-      "redis": {
-        "host": "localhost"
-      },
-      "token": {
-        "enable": {
-          "request": {
-            "inbox": true,
-            "outbox": true
+    ```
+    修改为
+    ```json
+    {
+      "services": {
+        "CoAuthoring": {
+          "sql": {
+            "dbHost": "localhost",
+            "dbName": "onlyoffice",
+            "dbUser": "onlyoffice",
+            "dbPass": "onlyoffice"
           },
-          "browser": true
-        },
-        "inbox": {
-          "header": "Authorization"
-        },
-        "outbox": {
-          "header": "Authorization"
+          "redis": {
+            "host": "localhost"
+          },
+          "token": {
+            "enable": {
+              "request": {
+                "inbox": true,
+                "outbox": true
+              },
+              "browser": true
+            },
+            "inbox": {
+              "header": "Authorization"
+            },
+            "outbox": {
+              "header": "Authorization"
+            }
+          },
+          "secret": {
+            "inbox": {
+              "string": "PLr15GPwJ8lzqlnk7DA7"
+            },
+            "outbox": {
+              "string": "PLr15GPwJ8lzqlnk7DA7"
+            },
+            "session": {
+              "string": "PLr15GPwJ8lzqlnk7DA7"
+            }
+          }
         }
       },
-      "secret": {
-        "inbox": {
-          "string": "PLr15GPwJ8lzqlnk7DA7"
-        },
-        "outbox": {
-          "string": "PLr15GPwJ8lzqlnk7DA7"
-        },
-        "session": {
-          "string": "PLr15GPwJ8lzqlnk7DA7"
-        }
+      "rabbitmq": {
+        "url": "amqp://guest:guest@localhost"
       }
     }
-  },
-  "rabbitmq": {
-    "url": "amqp://guest:guest@localhost"
-  }
-}
-```
+    ```
+2. 重启文档服务器
+    ```shell script
+    supervisorctl restart all
+    ```
