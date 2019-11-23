@@ -26,7 +26,7 @@ docker exec -it documentserver /bin/bash
 ```
 
 ### 3. 配置安全令牌
-1. 进入容器修改文件/etc/onlyoffice/documentserver/local.json
+1. 配置文件路径/etc/onlyoffice/documentserver/local.json
     ```json
     {
       "services": {
@@ -73,7 +73,7 @@ docker exec -it documentserver /bin/bash
       }
     }
     ```
-    修改为
+    修改内容为
     ```json
     {
       "services": {
