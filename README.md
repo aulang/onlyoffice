@@ -34,7 +34,7 @@ docker exec -it documentserver /bin/bash
 ```
 
 3. 字体中文名显示  
-参加字体修改[字体](./fonts/README.md)
+参见字体修改[字体](./fonts/README.md)
 
 ### 3. 配置安全令牌
 1. 配置文件路径/etc/onlyoffice/documentserver/local.json

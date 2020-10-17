@@ -40,11 +40,18 @@ dependencies {
             'org.springframework.boot:spring-boot-starter-web',
             'org.springframework.boot:spring-boot-starter-data-mongodb',
 
+            'com.nimbusds:nimbus-jose-jwt:9.0.1',
             'commons-io:commons-io:2.8.0',
             'io.minio:minio:7.1.4'
     )
-    compileOnly('org.projectlombok:lombok')
-    annotationProcessor('org.projectlombok:lombok')
+    compileOnly(
+            'org.projectlombok:lombok',
+            'org.mapstruct:mapstruct:1.4.1.Final',
+    )
+    annotationProcessor(
+            'org.projectlombok:lombok',
+            'org.mapstruct:mapstruct-processor:1.4.1.Final'
+    )
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }

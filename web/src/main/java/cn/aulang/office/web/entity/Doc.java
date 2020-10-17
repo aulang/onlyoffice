@@ -1,11 +1,12 @@
 package cn.aulang.office.web.entity;
 
 import cn.aulang.office.sdk.enums.DocumentStatus;
+import cn.aulang.office.sdk.enums.DocumentType;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.w3c.dom.DocumentType;
 
 /**
  * 文档
@@ -16,6 +17,7 @@ import org.w3c.dom.DocumentType;
  */
 @Data
 @Document
+@EqualsAndHashCode(callSuper = true)
 public class Doc extends BaseEntity {
     @Id
     private String id;
@@ -38,9 +40,15 @@ public class Doc extends BaseEntity {
     /**
      * 文档类型
      */
-    private DocumentType documentType;
+    private String documentType;
     /**
      * 文档状态
      */
-    private DocumentStatus status;
+    private String status;
+
+    public void setOwner(String owner, String ownerName) {
+        this.owner = owner;
+        this.ownerName = ownerName;
+        setCreator(owner, ownerName);
+    }
 }

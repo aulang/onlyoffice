@@ -25,7 +25,7 @@ public class StorageService {
 
     public void put(String bucketName, String objectName, InputStream stream, long size) throws IOException {
         PutObjectArgs args = PutObjectArgs.builder()
-                .object(bucketName)
+                .bucket(bucketName)
                 .object(objectName)
                 .stream(stream, size, -1)
                 .build();

@@ -1,1 +1,17 @@
+server:
+  port: 8082
+  http2:
+    enabled: true
 
+spring:
+  data:
+    mongodb:
+      uri: mongodb://127.0.0.1:27017/office
+
+minio:
+  endpoint: ${MINIO_ENDPOINT:https://play.min.io}
+  accessKey: ${MINIO_ACCESSKEY:Q3AM3UQ867SPQQA43P2F}
+  secretKey: ${MINIO_SECRETKEY:zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG}
+
+onlyoffice:
+  secret: ${ONLYOFFICE_SECRET:6xhCGB8T0KDRg8v8fLDDK9uuPdWoYvof}

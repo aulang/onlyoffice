@@ -1,8 +1,6 @@
 package cn.aulang.office.web.model.vo;
 
-import cn.aulang.office.sdk.enums.DocumentStatus;
 import lombok.Data;
-import org.w3c.dom.DocumentType;
 
 /**
  * 文档VO
@@ -13,7 +11,7 @@ import org.w3c.dom.DocumentType;
  */
 @Data
 public class DocVO {
-    public String id;
+    private String id;
     private String name;
 
     private String owner;
@@ -21,6 +19,6 @@ public class DocVO {
 
     private String key;
     private String fileType;
-    private DocumentType documentType;
-    private DocumentStatus status;
+    private String documentType;
+    private String status;
 }

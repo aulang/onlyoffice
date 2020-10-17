@@ -3,6 +3,7 @@ package cn.aulang.office.web.entity;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * @author wulang
@@ -15,8 +16,20 @@ public abstract class BaseEntity implements Serializable {
 
     protected String creatorId;
     protected String creatorName;
-    protected String createTime;
+    protected Date createTime;
     protected String modifierId;
     protected String modifierName;
-    protected String modifiedTime;
+    protected Date modifiedTime;
+
+    public void setCreator(String creatorId, String creatorName) {
+        this.creatorId = creatorId;
+        this.creatorName = creatorName;
+        this.createTime = new Date();
+    }
+
+    public void setModifier(String modifierId, String modifierName) {
+        this.modifierId = modifierId;
+        this.modifierName = modifierName;
+        this.modifiedTime = new Date();
+    }
 }

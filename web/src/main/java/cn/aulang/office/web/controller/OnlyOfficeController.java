@@ -1,9 +1,9 @@
 package cn.aulang.office.web.controller;
 
 import cn.aulang.office.web.common.Constants;
-import cn.aulang.office.web.converter.DocConverter;
 import cn.aulang.office.web.entity.Doc;
 import cn.aulang.office.web.service.DocService;
+import cn.aulang.office.web.service.OnlyOfficeService;
 import cn.aulang.office.web.service.StorageService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
@@ -15,9 +15,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import java.io.IOException;
@@ -26,43 +26,31 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
 /**
- * 文档Controller
- *
  * @author Aulang
  * @email aulang@qq.com
- * @date 2020-10-17 11:02
+ * @date 2020-10-17 22:04
  */
 @Slf4j
 @RestController
-@RequestMapping("/api/doc")
-public class DocController {
+@RequestMapping("/api/office")
+public class OnlyOfficeController {
     @Autowired
     private DocService docService;
     @Autowired
-    private DocConverter docConverter;
-    @Autowired
     private StorageService storageService;
+    @Autowired
+    private OnlyOfficeService onlyOfficeService;
 
-    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> open(MultipartFile file) {
-        String owner = Constants.OWNER;
-        String ownerName = Constants.OWNER_NAME;
+    @GetMapping(path = "/doc/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<StreamingResponseBody> doc(
+            @PathVariable("id") String id,
+            @RequestHeader("Authorization") String auth) {
 
-        String name = file.getOriginalFilename();
-        try {
-            storageService.put(owner, name, file.getInputStream(), file.getSize());
-        } catch (Exception e) {
-            log.error("文件上传失败：{}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("文件上传失败！");
+        if (onlyOfficeService.verify(auth)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
-        Doc doc = docService.create(owner, ownerName, name);
 
-        return ResponseEntity.ok(docConverter.toVO(doc));
-    }
-
-    @GetMapping("/{id}/download")
-    public ResponseEntity<StreamingResponseBody> file(@PathVariable String id) {
         Doc doc = docService.get(id);
 
         String name = doc.getName();
@@ -83,5 +71,11 @@ public class DocController {
         headers.setContentDispositionFormData(Constants.ATTACHMENT, filename);
 
         return new ResponseEntity<>(body, headers, HttpStatus.OK);
+    }
+
+
+    @PostMapping(path = "/callback", produces = MediaType.APPLICATION_JSON_VALUE)
+    public void callback() {
+
     }
 }

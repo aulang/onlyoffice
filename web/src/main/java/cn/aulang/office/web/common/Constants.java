@@ -9,4 +9,9 @@ package cn.aulang.office.web.common;
  */
 public interface Constants {
     String ATTACHMENT = "attachment";
+
+    String OWNER = "aulang";
+    String OWNER_NAME = "虽是所";
+
+    String BEARER = "Bearer ";
 }
