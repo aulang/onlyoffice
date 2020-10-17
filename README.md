@@ -3,15 +3,23 @@
 ```shell script
 docker pull onlyoffice/documentserver
 
-docker run -d -p 8088:80 --name=documentserver --restart=always -v /f/onlyoffice/logs:/var/log/onlyoffice -v /f/onlyoffice/data:/var/www/onlyoffice/Data -v /f/onlyoffice/lib:/var/lib/onlyoffice -v /f/onlyoffice/db:/var/lib/postgresql onlyoffice/documentserver
+docker run -d \
+-v /data/onlyoffice/logs:/var/log/onlyoffice \
+-v /data/onlyoffice/data:/var/www/onlyoffice/Data \
+-v /data/onlyoffice/lib:/var/lib/onlyoffice \
+-v /data/onlyoffice/db:/var/lib/postgresql \
+-p 8088:80 \
+--restart=always \
+--name=documentserver \
+onlyoffice/documentserver
 ```
 
 ### 2. 安装中文字体
 1. 准备Windows下中文字体文件打包好  
-C:\Windows\Fonts --> 设计用于（中文）--> 选择复制到/f/onlyoffice/data/winfonts
+C:\Windows\Fonts --> 设计用于（中文）--> 选择复制到/data/onlyoffice/data/WinFonts
 
 2. 安装Windows中文字体  
-复制/var/www/onlyoffice/Data/winfonts到/usr/share/fonts   
+复制/var/www/onlyoffice/Data/WinFonts到/usr/share/fonts   
 执行documentserver-generate-allfonts.sh
 
 ```shell script
@@ -19,11 +27,14 @@ C:\Windows\Fonts --> 设计用于（中文）--> 选择复制到/f/onlyoffice/da
 docker exec -it documentserver /bin/bash
 
 # 在容器中执行命令
-/# mv /var/www/onlyoffice/Data/winfonts/ usr/share/fonts/
+/# mv /var/www/onlyoffice/Data/WinFonts/ usr/share/fonts/
 /# cd /usr/bin
 /# documentserver-generate-allfonts.sh
 /# exit
 ```
+
+3. 字体中文名显示  
+参加字体修改[字体](./fonts/README.md)
 
 ### 3. 配置安全令牌
 1. 配置文件路径/etc/onlyoffice/documentserver/local.json
@@ -104,13 +115,13 @@ docker exec -it documentserver /bin/bash
           },
           "secret": {
             "inbox": {
-              "string": "PLr15GPwJ8lzqlnk7DA7"
+              "string": "密钥字符串"
             },
             "outbox": {
-              "string": "PLr15GPwJ8lzqlnk7DA7"
+              "string": "密钥字符串"
             },
             "session": {
-              "string": "PLr15GPwJ8lzqlnk7DA7"
+              "string": "密钥字符串"
             }
           }
         }
@@ -124,3 +135,14 @@ docker exec -it documentserver /bin/bash
     ```shell script
     supervisorctl restart all
     ```
+
+### 破解连接数限制
+进度容器，修改如下文件
+  - /var/www/onlyoffice/documentserver/web-apps/apps/documenteditor/main/app.js
+  - /var/www/onlyoffice/documentserver/web-apps/apps/documenteditor/mobile/app.js
+  - /var/www/onlyoffice/documentserver/web-apps/apps/presentationeditor/main/app.js
+  - /var/www/onlyoffice/documentserver/web-apps/apps/presentationeditor/mobile/app.js
+  - /var/www/onlyoffice/documentserver/web-apps/apps/spreadsheeteditor/main/app.js
+  - /var/www/onlyoffice/documentserver/web-apps/apps/presentationeditor/mobile/app.js
+  
+  修改this._state.licenseType=(t或e)为this._state.licenseType=0

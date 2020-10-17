@@ -1,21 +1,17 @@
 plugins {
-	id 'org.springframework.boot' version '2.2.1.RELEASE'
-	id 'io.spring.dependency-management' version '1.0.8.RELEASE'
-	id 'java'
+    id 'org.springframework.boot' version '2.3.4.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.10.RELEASE'
+    id 'java'
 }
 
-group = 'net.aulang.onlyoffice'
-version = '0.0.1-SNAPSHOT'
+group = 'cn.aulang.office'
+version = '1.0.0'
 sourceCompatibility = '11'
 
 configurations {
-	developmentOnly
-	runtimeClasspath {
-		extendsFrom developmentOnly
-	}
-	compileOnly {
-		extendsFrom annotationProcessor
-	}
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
 }
 
 repositories {
@@ -40,24 +36,20 @@ repositories {
 }
 
 dependencies {
-	implementation (
-		'org.springframework.boot:spring-boot-starter-data-mongodb',
-		'org.springframework.boot:spring-boot-starter-thymeleaf',
-		'org.springframework.boot:spring-boot-starter-web'
-	)
+    implementation(
+            'org.springframework.boot:spring-boot-starter-web',
+            'org.springframework.boot:spring-boot-starter-data-mongodb',
 
-	compileOnly 'org.projectlombok:lombok'
-	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-	annotationProcessor (
-		'org.projectlombok:lombok',
-		'org.springframework.boot:spring-boot-configuration-processor'
-	)
-
-	testImplementation('org.springframework.boot:spring-boot-starter-test') {
-		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
-	}
+            'commons-io:commons-io:2.8.0',
+            'io.minio:minio:7.1.4'
+    )
+    compileOnly('org.projectlombok:lombok')
+    annotationProcessor('org.projectlombok:lombok')
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
 }
 
 test {
-	useJUnitPlatform()
+    useJUnitPlatform()
 }
