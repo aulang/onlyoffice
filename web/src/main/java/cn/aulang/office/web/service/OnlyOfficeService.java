@@ -1,11 +1,17 @@
 package cn.aulang.office.web.service;
 
 import cn.aulang.office.sdk.util.SignatureUtils;
+import cn.aulang.office.web.common.Constants;
+import cn.aulang.office.web.factory.HttpsUrlConnectionFactory;
 import cn.aulang.office.web.properties.OnlyOfficeProperties;
 import com.nimbusds.jose.JOSEException;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.io.InputStream;
+import java.net.HttpURLConnection;
 
 /**
  * OnlyOffice服务
@@ -29,4 +35,12 @@ public class OnlyOfficeService {
         }
     }
 
+    @SneakyThrows
+    public InputStream downloadFile(String url) {
+        HttpURLConnection connection = HttpsUrlConnectionFactory.create(url);
+
+        connection.setRequestProperty(Constants.AUTHORIZATION, SignatureUtils.genToken("{}", properties.getSecret()));
+
+        return connection.getInputStream();
+    }
 }

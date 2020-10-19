@@ -23,6 +23,10 @@ public class StorageService {
     @Autowired
     private MinioClient client;
 
+    public void put(String bucketName, String objectName, InputStream stream) throws IOException {
+        put(bucketName, objectName, stream, -1);
+    }
+
     public void put(String bucketName, String objectName, InputStream stream, long size) throws IOException {
         PutObjectArgs args = PutObjectArgs.builder()
                 .bucket(bucketName)
@@ -35,6 +39,10 @@ public class StorageService {
         } catch (Exception e) {
             log.error("上传对象失败！", e);
             throw new IOException(e);
+        }
+
+        if (stream != null) {
+            stream.close();
         }
     }
 

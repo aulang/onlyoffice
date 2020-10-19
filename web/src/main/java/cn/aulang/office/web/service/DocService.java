@@ -8,7 +8,14 @@ import cn.aulang.office.web.repository.DocRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 /**
  * @author 文档服务
@@ -41,5 +48,39 @@ public class DocService {
         doc.setStatus(DocumentStatus.saved.name());
 
         return docRepository.save(doc);
+    }
+
+    public Page<Doc> search(String name, String fileType, int page, int pageSize) {
+        Doc doc = new Doc();
+
+        if (!StringUtils.isEmpty(name)) {
+            doc.setName(name);
+        }
+
+        if (!StringUtils.isEmpty(fileType)) {
+            doc.setFileType(fileType);
+        }
+
+        ExampleMatcher matcher = ExampleMatcher
+                .matching()
+                .withMatcher("name",
+                        ExampleMatcher.GenericPropertyMatcher.of(ExampleMatcher.StringMatcher.CONTAINING));
+
+        Example<Doc> example = Example.of(doc, matcher);
+
+        Pageable pageable = PageRequest.of(page, pageSize, Sort.Direction.DESC, "createTime");
+        return docRepository.findAll(example, pageable);
+    }
+
+    public Doc saveStatus(String key, DocumentStatus status, String modifierId) {
+        Doc doc = docRepository.findByKey(key);
+        if (doc != null) {
+            doc.setModifier(modifierId, null);
+            doc.setStatus(status.name());
+            return docRepository.save(doc);
+        } else {
+            log.warn("不存在的文档key：{}", key);
+            return null;
+        }
     }
 }

@@ -14,4 +14,5 @@ public interface Constants {
     String OWNER_NAME = "虽是所";
 
     String BEARER = "Bearer ";
+    String AUTHORIZATION = "Authorization";
 }

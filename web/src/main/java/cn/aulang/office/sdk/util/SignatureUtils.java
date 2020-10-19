@@ -17,7 +17,8 @@ import org.springframework.util.StringUtils;
  * @date 2020-10-17 22:00
  */
 public class SignatureUtils {
-    public static final String EMPTY = " ";
+    private static final String EMPTY = " ";
+    private static final String BEARER = "Bearer ";
 
     public static String parseToken(String authorization, String secret) throws JOSEException {
         try {
@@ -39,7 +40,7 @@ public class SignatureUtils {
         }
     }
 
-    public String genToken(String content, String secret) throws JOSEException {
+    public static String genToken(String content, String secret) throws JOSEException {
         Payload payload = new Payload(content.getBytes());
         JWSHeader jwsHeader = new JWSHeader(JWSAlgorithm.HS256);
         JWSObject jwsObject = new JWSObject(jwsHeader, payload);
@@ -47,6 +48,6 @@ public class SignatureUtils {
         JWSSigner jwsSigner = new MACSigner(secret);
         jwsObject.sign(jwsSigner);
 
-        return jwsObject.serialize();
+        return BEARER + jwsObject.serialize();
     }
 }

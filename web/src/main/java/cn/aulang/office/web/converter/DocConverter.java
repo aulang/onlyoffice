@@ -4,6 +4,8 @@ import cn.aulang.office.web.entity.Doc;
 import cn.aulang.office.web.model.vo.DocVO;
 import org.mapstruct.Mapper;
 
+import java.util.List;
+
 /**
  * @author Aulang
  * @email aulang@qq.com
@@ -13,5 +15,7 @@ import org.mapstruct.Mapper;
 public interface DocConverter {
 
     DocVO toVO(Doc doc);
+
+    List<DocVO> toVOs(List<Doc> docs);
 
 }

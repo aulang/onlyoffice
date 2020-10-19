@@ -3,11 +3,14 @@ package cn.aulang.office.web.controller;
 import cn.aulang.office.web.common.Constants;
 import cn.aulang.office.web.converter.DocConverter;
 import cn.aulang.office.web.entity.Doc;
+import cn.aulang.office.web.model.response.PageResponse;
+import cn.aulang.office.web.model.vo.DocVO;
 import cn.aulang.office.web.service.DocService;
 import cn.aulang.office.web.service.StorageService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -16,6 +19,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
@@ -61,8 +65,44 @@ public class DocController {
         return ResponseEntity.ok(docConverter.toVO(doc));
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Object> get(@PathVariable("id") String id) {
+        Doc doc = docService.get(id);
+        return ResponseEntity.ok(docConverter.toVO(doc));
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<Object> list(
+            @RequestParam(name = "name", required = false) String name,
+            @RequestParam(name = "fileType", required = false) String fileType,
+            @RequestParam(name = "page", defaultValue = "1") Integer page,
+            @RequestParam(name = "pageSize", defaultValue = "20") Integer pageSize) {
+        if (page < 0) {
+            page = 0;
+        }
+
+        if (page > 0) {
+            page = page - 1;
+        }
+
+        if (pageSize < 1) {
+            pageSize = 20;
+        }
+
+        Page<Doc> docs = docService.search(name, fileType, page, pageSize);
+
+        PageResponse<DocVO> response = PageResponse.of(
+                docs.getNumber() + 1,
+                docs.getSize(),
+                docs.getTotalPages(),
+                docConverter.toVOs(docs.getContent())
+        );
+
+        return ResponseEntity.ok(response);
+    }
+
     @GetMapping("/{id}/download")
-    public ResponseEntity<StreamingResponseBody> file(@PathVariable String id) {
+    public ResponseEntity<StreamingResponseBody> file(@PathVariable("id") String id) {
         Doc doc = docService.get(id);
 
         String name = doc.getName();
