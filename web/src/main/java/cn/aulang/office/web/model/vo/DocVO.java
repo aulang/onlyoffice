@@ -21,4 +21,7 @@ public class DocVO {
     private String fileType;
     private String documentType;
     private String status;
+
+    private String createTime;
+    private String modifiedTime;
 }

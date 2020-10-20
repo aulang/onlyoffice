@@ -38,7 +38,7 @@ import java.util.List;
  */
 @Slf4j
 @RestController
-@RequestMapping("/api/office")
+@RequestMapping("/office")
 public class OnlyOfficeController {
     @Autowired
     private DocService docService;

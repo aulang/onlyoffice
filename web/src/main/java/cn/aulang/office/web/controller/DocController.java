@@ -3,10 +3,12 @@ package cn.aulang.office.web.controller;
 import cn.aulang.office.web.common.Constants;
 import cn.aulang.office.web.converter.DocConverter;
 import cn.aulang.office.web.entity.Doc;
+import cn.aulang.office.web.model.dto.User;
 import cn.aulang.office.web.model.response.PageResponse;
 import cn.aulang.office.web.model.vo.DocVO;
 import cn.aulang.office.web.service.DocService;
 import cn.aulang.office.web.service.StorageService;
+import cn.aulang.office.web.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -38,29 +41,30 @@ import java.nio.charset.StandardCharsets;
  */
 @Slf4j
 @RestController
-@RequestMapping("/api/doc")
+@RequestMapping("/doc")
 public class DocController {
     @Autowired
     private DocService docService;
+    @Autowired
+    private UserService userService;
     @Autowired
     private DocConverter docConverter;
     @Autowired
     private StorageService storageService;
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> open(MultipartFile file) {
-        String owner = Constants.OWNER;
-        String ownerName = Constants.OWNER_NAME;
+    public ResponseEntity<Object> open(@RequestParam("file") MultipartFile file) {
+        User user = userService.currentUser();
 
         String name = file.getOriginalFilename();
         try {
-            storageService.put(owner, name, file.getInputStream(), file.getSize());
+            storageService.put(user.getId(), name, file.getInputStream(), file.getSize());
         } catch (Exception e) {
             log.error("文件上传失败：{}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("文件上传失败！");
         }
 
-        Doc doc = docService.create(owner, ownerName, name);
+        Doc doc = docService.create(user.getId(), user.getName(), name);
 
         return ResponseEntity.ok(docConverter.toVO(doc));
     }
@@ -69,6 +73,12 @@ public class DocController {
     public ResponseEntity<Object> get(@PathVariable("id") String id) {
         Doc doc = docService.get(id);
         return ResponseEntity.ok(docConverter.toVO(doc));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Object> delete(@PathVariable("id") String id) {
+        docService.delete(id);
+        return ResponseEntity.ok(null);
     }
 
     @GetMapping("/list")

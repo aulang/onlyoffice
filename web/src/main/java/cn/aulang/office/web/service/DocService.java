@@ -4,6 +4,7 @@ import cn.aulang.office.sdk.enums.DocumentStatus;
 import cn.aulang.office.sdk.enums.DocumentType;
 import cn.aulang.office.sdk.util.UUID;
 import cn.aulang.office.web.entity.Doc;
+import cn.aulang.office.web.model.dto.User;
 import cn.aulang.office.web.repository.DocRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
@@ -26,10 +27,16 @@ import org.springframework.util.StringUtils;
 @Service
 public class DocService {
     @Autowired
+    private UserService userService;
+    @Autowired
     private DocRepository docRepository;
 
     public Doc get(String id) {
         return docRepository.findById(id).orElseThrow();
+    }
+
+    public void delete(String id) {
+        docRepository.deleteById(id);
     }
 
     public Doc create(String owner, String ownerName, String name) {
@@ -74,13 +81,19 @@ public class DocService {
 
     public Doc saveStatus(String key, DocumentStatus status, String modifierId) {
         Doc doc = docRepository.findByKey(key);
-        if (doc != null) {
-            doc.setModifier(modifierId, null);
-            doc.setStatus(status.name());
-            return docRepository.save(doc);
-        } else {
+        if (doc == null) {
             log.warn("不存在的文档key：{}", key);
             return null;
         }
+
+        String modifierName = null;
+        User user = userService.getById(modifierId);
+        if (user != null) {
+            modifierName = user.getName();
+        }
+
+        doc.setModifier(modifierId, modifierName);
+        doc.setStatus(status.name());
+        return docRepository.save(doc);
     }
 }
