@@ -17,6 +17,7 @@ stop_service:
   stage: stop
   only:
     - master
+  allow_failure: true
   script:
     - docker stop office
     - docker rm office
