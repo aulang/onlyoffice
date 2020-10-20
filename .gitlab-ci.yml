@@ -10,6 +10,7 @@ build_image:
   script:
     - cd ./web
     - gradle build
+    - cd ../
     - docker build -t aulang/office .
 
 stop_service:
