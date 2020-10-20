@@ -1,4 +1,4 @@
-let baseUrl = 'http://localhost:8082/';
+let baseUrl = 'http://office.aulang.cn/api/';
 
 let fileTypes = ['.doc', '.docx', '.odt', '.txt', '.xls', '.xlsx', '.ods', '.csv', '.ppt', '.pptx', '.odt'];
 

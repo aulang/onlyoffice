@@ -1,0 +1,38 @@
+stages:
+  - build
+  - stop
+  - deploy
+
+build_image:
+  stage: build
+  only:
+    - master
+  script:
+    - cd ./web
+    - gradle build
+    - docker build -t aulang/office .
+
+stop_service:
+  stage: stop
+  only:
+    - master
+  script:
+    - docker stop office
+    - docker rm office
+
+
+delete_none_image:
+  stage: deploy
+  only:
+    - master
+  allow_failure: true
+  script:
+    - docker rmi $(docker images | grep "none" | awk '{print $3}')
+
+deploy_service:
+  stage: deploy
+  only:
+    - master
+  script:
+    - rm -rf /var/log/office/*
+    - docker run -d -v /var/log/office:/var/log/office --name=office --net=host --restart=always aulang/office

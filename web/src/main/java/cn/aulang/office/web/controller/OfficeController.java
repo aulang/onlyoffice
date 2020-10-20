@@ -5,9 +5,11 @@ import cn.aulang.office.sdk.model.Callback;
 import cn.aulang.office.sdk.model.Result;
 import cn.aulang.office.web.common.Constants;
 import cn.aulang.office.web.entity.Doc;
+import cn.aulang.office.web.model.request.TokenRequest;
 import cn.aulang.office.web.service.DocService;
 import cn.aulang.office.web.service.OnlyOfficeService;
 import cn.aulang.office.web.service.StorageService;
+import com.nimbusds.jose.JOSEException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +41,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/office")
-public class OnlyOfficeController {
+public class OfficeController {
     @Autowired
     private DocService docService;
     @Autowired
@@ -149,6 +151,17 @@ public class OnlyOfficeController {
                 log.error("回调保存文件失败！", e);
                 docService.saveStatus(key, DocumentStatus.error, user);
             }
+        }
+    }
+
+    @PostMapping(path = "/token", produces = MediaType.TEXT_PLAIN_VALUE)
+    public ResponseEntity<String> token(@RequestBody TokenRequest request) {
+        try {
+            String jwt = onlyOfficeService.genToken(request.getContent());
+            return ResponseEntity.ok(jwt);
+        } catch (JOSEException e) {
+            log.error("生成JWT失败！", e);
+            return ResponseEntity.status(500).body(e.getMessage());
         }
     }
 }

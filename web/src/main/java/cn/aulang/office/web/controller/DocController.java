@@ -52,7 +52,7 @@ public class DocController {
     @Autowired
     private StorageService storageService;
 
-    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping
     public ResponseEntity<Object> open(@RequestParam("file") MultipartFile file) {
         User user = userService.currentUser();
 

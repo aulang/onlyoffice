@@ -35,6 +35,10 @@ public class OnlyOfficeService {
         }
     }
 
+    public String genToken(String content) throws JOSEException {
+        return SignatureUtils.genToken(content, properties.getSecret());
+    }
+
     @SneakyThrows
     public InputStream downloadFile(String url) {
         HttpURLConnection connection = HttpsUrlConnectionFactory.create(url);
