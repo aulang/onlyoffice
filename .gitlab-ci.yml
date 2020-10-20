@@ -37,4 +37,4 @@ deploy_service:
     - master
   script:
     - rm -rf /var/log/office/*
-    - docker run -d -v /var/log/office:/var/log/office --name=office --net=host --restart=always aulang/office
+    - docker run -d -v /var/log/office:/var/log/office -e MINIO_ENDPOINT=$MINIO_ENDPOINT -e MINIO_ACCESSKEY=$MINIO_ACCESSKEY -e MINIO_SECRETKEY=$MINIO_SECRETKEY -e ONLYOFFICE_SECRET=$ONLYOFFICE_SECRET --name=office --net=host --restart=always aulang/office

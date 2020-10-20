@@ -14,4 +14,4 @@ minio:
   secretKey: ${MINIO_SECRETKEY:zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG}
 
 onlyoffice:
-  secret: ${ONLYOFFICE_SECRET:6xhCGB8T0KDRg8v8fLDDK9uuPdWoYvof}
+  secret: ${ONLYOFFICE_SECRET:xxxxxxxxxxxxxxxxxxxxx}
