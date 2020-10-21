@@ -1,7 +1,8 @@
-let baseUrl = 'http://office.aulang.cn/api/';
-let callbackUrl = baseUrl + 'office/callback';
+let baseUrl = 'http://office.aulang.cn';
 
-let goBackUrl = 'http://office.aulang.cn/index.html';
+let goBackUrl = baseUrl + '/index.html';
+
+let callbackUrl = baseUrl + '/api/office/callback';
 
 
 var config = {
@@ -44,10 +45,10 @@ function urlParam(name) {
 
 var id = urlParam('id');
 if (id) {
-    axios.get(baseUrl + 'doc/' + id)
+    axios.get(baseUrl + '/api/doc/' + id)
         .then(response => {
             let result = response.data;
-            let fileUrl = baseUrl + 'office/doc/' + id;
+            let fileUrl = baseUrl + '/api/office/doc/' + id;
 
             config.documentType = result.documentType;
 
@@ -85,7 +86,7 @@ function openWithToken(config) {
         'content': JSON.stringify(config)
     };
 
-    axios.post(baseUrl + 'office/token', postData)
+    axios.post(baseUrl + '/api/office/token', postData)
         .then(response => {
             config.token = response.data;
             new DocsAPI.DocEditor('placeholder', config);

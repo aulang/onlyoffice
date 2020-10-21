@@ -20,4 +20,8 @@ public class Result {
     public static Result success() {
         return new Result(0);
     }
+
+    public static Result fail() {
+        return new Result(-1);
+    }
 }

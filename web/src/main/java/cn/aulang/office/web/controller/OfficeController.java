@@ -49,16 +49,13 @@ public class OfficeController {
     @Autowired
     private OnlyOfficeService onlyOfficeService;
 
-    @GetMapping(path = "/doc/{id}")
+    @GetMapping(path = "/doc/{id}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     public ResponseEntity<StreamingResponseBody> doc(
             @PathVariable("id") String id,
             @RequestHeader("Authorization") String auth) {
-        log.info("OnlyOffice获取文件，id：{}，Authorization：{}", id, auth);
-
-        if (onlyOfficeService.verify(auth)) {
+        if (!onlyOfficeService.verify(auth)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
-
 
         Doc doc = docService.get(id);
 
@@ -86,11 +83,8 @@ public class OfficeController {
     @PostMapping(path = "/callback", produces = MediaType.APPLICATION_JSON_VALUE)
     public Result callback(@RequestBody Callback body,
                            @RequestHeader(name = "Authorization") String auth) {
-        String bodyContent = body.toString();
-        log.info("OnlyOffice回调，body：{}，Authorization：{}", bodyContent, auth);
-
-        if (onlyOfficeService.verify(auth)) {
-            return Result.success();
+        if (!onlyOfficeService.verify(auth)) {
+            return Result.fail();
         }
 
         String key = body.getKey();
@@ -103,6 +97,7 @@ public class OfficeController {
             user = users.get(0);
         }
 
+        String bodyContent = body.toString();
         switch (status) {
             case 0:
                 // 文档不存在

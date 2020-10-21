@@ -1,4 +1,4 @@
-let baseUrl = 'http://office.aulang.cn/api/';
+let baseUrl = 'http://office.aulang.cn';
 
 let fileTypes = ['.doc', '.docx', '.odt', '.txt', '.xls', '.xlsx', '.ods', '.csv', '.ppt', '.pptx', '.odt'];
 
@@ -40,7 +40,7 @@ let index = new Vue({
             let formData = new FormData();
             formData.append('file', e.target.files[0]);
 
-            axios.post(baseUrl + 'doc', formData, config)
+            axios.post(baseUrl + '/api/doc', formData, config)
                 .then(response => {
                     let result = response.data;
 
@@ -54,12 +54,12 @@ let index = new Vue({
             window.open('./editor.html?id=' + id, '_blank').focus();
         },
         download: function (id) {
-            axios.get(baseUrl + 'doc/' + id)
+            axios.get(baseUrl + '/api/doc/' + id)
                 .then(response => {
                     let result = response.data;
 
                     if ('saved' === result.status) {
-                        downloadFile(baseUrl + 'doc/' + id + '/download');
+                        downloadFile(baseUrl + '/api/doc/' + id + '/download');
                     } else {
                         alert('文档正在编辑或保存中，请稍后再进行下载！');
                     }
@@ -71,7 +71,7 @@ let index = new Vue({
         del: function (id, name) {
             let flag = confirm('确认删除【' + name + '】');
             if (flag) {
-                axios.delete(baseUrl + 'doc/' + id)
+                axios.delete(baseUrl + '/api/doc/' + id)
                     .then(() => {
                         alert('删除成功！');
                         getDocs(index.page, index.pageSize);
@@ -100,7 +100,7 @@ function getDocs(page, pageSize) {
     page = page || 1;
     pageSize = pageSize || 20;
 
-    axios.get(baseUrl + 'doc/list', {page: page, pageSize: pageSize})
+    axios.get(baseUrl + '/api/doc/list', {page: page, pageSize: pageSize})
         .then(response => {
             let result = response.data;
 

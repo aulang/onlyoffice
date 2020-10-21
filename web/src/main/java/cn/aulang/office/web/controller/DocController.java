@@ -52,7 +52,7 @@ public class DocController {
     @Autowired
     private StorageService storageService;
 
-    @PostMapping
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> open(@RequestParam("file") MultipartFile file) {
         User user = userService.currentUser();
 
@@ -69,19 +69,19 @@ public class DocController {
         return ResponseEntity.ok(docConverter.toVO(doc));
     }
 
-    @GetMapping("/{id}")
+    @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> get(@PathVariable("id") String id) {
         Doc doc = docService.get(id);
         return ResponseEntity.ok(docConverter.toVO(doc));
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> delete(@PathVariable("id") String id) {
         docService.delete(id);
         return ResponseEntity.ok(null);
     }
 
-    @GetMapping("/list")
+    @GetMapping(path = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> list(
             @RequestParam(name = "name", required = false) String name,
             @RequestParam(name = "fileType", required = false) String fileType,
@@ -111,7 +111,7 @@ public class DocController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/{id}/download")
+    @GetMapping(path = "/{id}/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     public ResponseEntity<StreamingResponseBody> file(@PathVariable("id") String id) {
         Doc doc = docService.get(id);
 
