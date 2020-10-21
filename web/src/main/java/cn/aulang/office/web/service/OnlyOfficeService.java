@@ -25,6 +25,8 @@ import java.net.HttpURLConnection;
 public class OnlyOfficeService {
     @Autowired
     private OnlyOfficeProperties properties;
+    @Autowired
+    private StorageService storageService;
 
     public boolean verify(String token) {
         try {
@@ -41,12 +43,19 @@ public class OnlyOfficeService {
     }
 
     @SneakyThrows
-    public InputStream downloadFile(String url) {
+    public void saveDocFile(String url, String bucketName, String objectName) {
         HttpURLConnection connection = HttpsUrlConnectionFactory.create(url);
 
         connection.setRequestProperty(Constants.AUTHORIZATION,
                 Constants.BEARER + SignatureUtils.genToken("{}", properties.getSecret()));
 
-        return connection.getInputStream();
+        long length = connection.getContentLengthLong();
+
+        InputStream inputStream = connection.getInputStream();
+        if (length < 0) {
+            length = inputStream.available();
+        }
+
+        storageService.put(bucketName, objectName, inputStream, length);
     }
 }

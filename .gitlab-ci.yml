@@ -31,6 +31,14 @@ delete_none_image:
   script:
     - docker rmi $(docker images | grep "none" | awk '{print $3}')
 
+deploy-frontend:
+  stage: deploy
+  only:
+    - master
+  script:
+    - rm -rf /usr/share/nginx/office/
+    - cp -rf ./UI/ /usr/share/nginx/office
+
 deploy_service:
   stage: deploy
   only:

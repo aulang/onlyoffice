@@ -145,8 +145,7 @@ public class OfficeController {
         Doc doc = docService.saveStatus(key, status, user);
         if (doc != null) {
             try {
-                InputStream inputStream = onlyOfficeService.downloadFile(url);
-                storageService.put(doc.getOwner(), doc.getName(), inputStream);
+                onlyOfficeService.saveDocFile(url, doc.getOwner(), doc.getName());
             } catch (Exception e) {
                 log.error("回调保存文件失败！", e);
                 docService.saveStatus(key, DocumentStatus.error, user);

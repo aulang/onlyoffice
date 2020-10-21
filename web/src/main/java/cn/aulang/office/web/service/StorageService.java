@@ -23,10 +23,6 @@ public class StorageService {
     @Autowired
     private MinioClient client;
 
-    public void put(String bucketName, String objectName, InputStream stream) throws IOException {
-        put(bucketName, objectName, stream, -1);
-    }
-
     public void put(String bucketName, String objectName, InputStream stream, long size) throws IOException {
         PutObjectArgs args = PutObjectArgs.builder()
                 .bucket(bucketName)
