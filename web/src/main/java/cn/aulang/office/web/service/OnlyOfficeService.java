@@ -52,7 +52,8 @@ public class OnlyOfficeService {
         long length = connection.getContentLengthLong();
 
         InputStream inputStream = connection.getInputStream();
-        if (length < 0) {
+
+        if (length < 1) {
             length = inputStream.available();
         }
 
