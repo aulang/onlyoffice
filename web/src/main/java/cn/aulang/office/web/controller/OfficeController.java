@@ -107,6 +107,7 @@ public class OfficeController {
                 // 正在编辑文档
                 log.info("回调正在编辑文档：{}", bodyContent);
                 docService.saveStatus(key, DocumentStatus.editing, user);
+                break;
             case 2: {
                 // 关闭并保存文档
                 log.info("回调关闭并保存文档：{}", bodyContent);
