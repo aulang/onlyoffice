@@ -16,13 +16,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Result {
     private int error = 0;
-    private String msg = null;
 
     public static Result success() {
-        return new Result(0, null);
-    }
-
-    public static Result fail(String msg) {
-        return new Result(-1, msg);
+        return new Result(0);
     }
 }

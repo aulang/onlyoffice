@@ -83,14 +83,14 @@ public class OfficeController {
     }
 
 
-    @PostMapping("/callback")
+    @PostMapping(path = "/callback", produces = MediaType.APPLICATION_JSON_VALUE)
     public Result callback(@RequestBody Callback body,
                            @RequestHeader(name = "Authorization") String auth) {
         String bodyContent = body.toString();
         log.info("OnlyOffice回调，body：{}，Authorization：{}", bodyContent, auth);
 
         if (onlyOfficeService.verify(auth)) {
-            return Result.fail("认证失败");
+            return Result.success();
         }
 
         String key = body.getKey();
