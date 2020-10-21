@@ -49,10 +49,11 @@ public class OfficeController {
     @Autowired
     private OnlyOfficeService onlyOfficeService;
 
-    @GetMapping(path = "/doc/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/doc/{id}")
     public ResponseEntity<StreamingResponseBody> doc(
             @PathVariable("id") String id,
             @RequestHeader("Authorization") String auth) {
+        log.info("OnlyOffice获取文件，id：{}，Authorization：{}", id, auth);
 
         if (onlyOfficeService.verify(auth)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
@@ -82,8 +83,12 @@ public class OfficeController {
     }
 
 
-    @PostMapping(path = "/callback", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Result callback(@RequestBody Callback body, @RequestHeader(name = "Authorization") String auth) {
+    @PostMapping("/callback")
+    public Result callback(@RequestBody Callback body,
+                           @RequestHeader(name = "Authorization") String auth) {
+        String bodyContent = body.toString();
+        log.info("OnlyOffice回调，body：{}，Authorization：{}", bodyContent, auth);
+
         if (onlyOfficeService.verify(auth)) {
             return Result.fail("认证失败");
         }
@@ -105,36 +110,36 @@ public class OfficeController {
                 break;
             case 1:
                 // 正在编辑文档
-                log.info("回调正在编辑文档：{}", body.toString());
+                log.info("回调正在编辑文档：{}", bodyContent);
                 docService.saveStatus(key, DocumentStatus.editing, user);
             case 2: {
                 // 关闭并保存文档
-                log.info("回调关闭并保存文档：{}", body.toString());
+                log.info("回调关闭并保存文档：{}", bodyContent);
                 saveStatusAndFile(key, DocumentStatus.saved, user, url);
                 break;
             }
             case 3:
                 // 关闭并保存文档出错
-                log.warn("回调关闭并保存文档出错：{}", body.toString());
+                log.warn("回调关闭并保存文档出错：{}", bodyContent);
                 saveStatusAndFile(key, DocumentStatus.error, user, url);
                 break;
             case 4:
                 // 关闭并未修改文档
-                log.info("回调关闭并未修改文档：{}", body.toString());
+                log.info("回调关闭并未修改文档：{}", bodyContent);
                 docService.saveStatus(key, DocumentStatus.saved, user);
                 break;
             case 6:
                 // 编辑中保存文档
-                log.info("回调编辑中保存文档：{}", body.toString());
+                log.info("回调编辑中保存文档：{}", bodyContent);
                 saveStatusAndFile(key, DocumentStatus.editing, user, url);
                 break;
             case 7:
                 // 编辑中保存文档出错
-                log.warn("回调编辑中保存文档出错：{}", body.toString());
+                log.warn("回调编辑中保存文档出错：{}", bodyContent);
                 saveStatusAndFile(key, DocumentStatus.editing, user, url);
                 break;
             default:
-                log.info("未知的回调状态：{}", body.toString());
+                log.info("未知的回调状态：{}", bodyContent);
                 break;
         }
 

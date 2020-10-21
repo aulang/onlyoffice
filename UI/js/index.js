@@ -27,7 +27,7 @@ let index = new Vue({
             }
 
             let fileType = filename.substr(filename.indexOf('.'));
-            if (fileTypes.indexOf(fileType) == -1) {
+            if (fileTypes.indexOf(fileType) === -1) {
                 alert('文件格式不对');
                 return;
             }
@@ -38,7 +38,7 @@ let index = new Vue({
                 }
             }
             let formData = new FormData();
-            formData.append("file", e.target.files[0]);
+            formData.append('file', e.target.files[0]);
 
             axios.post(baseUrl + 'doc', formData, config)
                 .then(response => {
@@ -88,9 +88,9 @@ let index = new Vue({
 });
 
 function downloadFile(url) {
-    let a = document.createElement("a");
+    let a = document.createElement('a');
     a.href = url;
-    a.style.display = "none";
+    a.style.display = 'none';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);

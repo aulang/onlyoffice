@@ -18,7 +18,6 @@ import org.springframework.util.StringUtils;
  */
 public class SignatureUtils {
     private static final String EMPTY = " ";
-    private static final String BEARER = "Bearer ";
 
     public static String parseToken(String authorization, String secret) throws JOSEException {
         try {
@@ -48,6 +47,6 @@ public class SignatureUtils {
         JWSSigner jwsSigner = new MACSigner(secret);
         jwsObject.sign(jwsSigner);
 
-        return BEARER + jwsObject.serialize();
+        return jwsObject.serialize();
     }
 }

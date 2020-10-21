@@ -31,6 +31,7 @@ public class OnlyOfficeService {
             SignatureUtils.parseToken(token, properties.getSecret());
             return true;
         } catch (JOSEException e) {
+            log.error("解析JWT失败！", e);
             return false;
         }
     }
@@ -43,7 +44,8 @@ public class OnlyOfficeService {
     public InputStream downloadFile(String url) {
         HttpURLConnection connection = HttpsUrlConnectionFactory.create(url);
 
-        connection.setRequestProperty(Constants.AUTHORIZATION, SignatureUtils.genToken("{}", properties.getSecret()));
+        connection.setRequestProperty(Constants.AUTHORIZATION,
+                Constants.BEARER + SignatureUtils.genToken("{}", properties.getSecret()));
 
         return connection.getInputStream();
     }
