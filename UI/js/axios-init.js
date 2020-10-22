@@ -1,6 +1,6 @@
+let baseUrl = 'http://office.aulang.cn';
 let clientId = '5f37d9f4c4155cda795f8fe5';
-let redirectUri = 'http://office.aulang.cn/index.html';
-let baseUrl = 'http://localhost:8082';
+let redirectUri = encodeURI('http://office.aulang.cn/index.html');
 
 // 配置请求baseURL
 axios.defaults.baseURL = baseUrl;
@@ -59,12 +59,11 @@ axios.interceptors.response.use(
 function redirectLoginUrl() {
     let scope = 'basic';
     let responseType = 'code';
-    let encodeRedirectUri = encodeURI(redirectUri);
 
     let state = Math.random().toString(36).slice(0, 6);
     window.sessionStorage.setItem('oauth_state', state);
 
-    let url = `https://aulang.cn/oauth/authorize?client_id=${clientId}&response_type=${responseType}&redirect_uri=${encodeRedirectUri}&scope=${scope}&state=${state}`;
+    let url = `https://aulang.cn/oauth/authorize?client_id=${clientId}&response_type=${responseType}&redirect_uri=${redirectUri}&scope=${scope}&state=${state}`;
     window.location.replace(url);
 }
 
@@ -110,12 +109,12 @@ function loginHandle() {
 
     window.sessionStorage.removeItem('oauth_state');
 
-    let postData = {
+    let params = {
         code: code,
         redirectUrl: redirectUri
     }
 
-    axios.post('/oauth/token', postData)
+    axios.get('/api/oauth/token', {params: params})
         .then(response => {
             let result = response.data;
             let token = result.access_token;
