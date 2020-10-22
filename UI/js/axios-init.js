@@ -1,11 +1,13 @@
+let clientId = 'xxxxx';
+let redirectUri = 'http://office.aulang.cn/index.html';
 let baseUrl = 'http://office.aulang.cn';
 
+// 配置请求baseURL
+axios.defaults.baseURL = baseUrl;
 // 允许跨域
 axios.defaults.crossDomain = true;
 // 允许跨域携带Cookie
 axios.defaults.withCredentials = true;
-// 配置请求baseURL
-//axios.defaults.baseURL = 'http://office.aulang.cn';
 // 设置请求头为 Authorization
 axios.defaults.headers.common['Authorization'] = '';
 
@@ -54,9 +56,6 @@ axios.interceptors.response.use(
     }
 );
 
-let clientId = 'xxxxx';
-let redirectUri = encodeURI('http://office.aulang.cn/index.html');
-
 function redirectLoginUrl() {
     let scope = 'basic';
     let responseType = 'code';
@@ -88,7 +87,7 @@ function urlParam(name) {
     return null;
 }
 
-function loginCheck() {
+function loginHandle() {
     let code = urlParam('code');
     let state = urlParam('state');
 
@@ -109,7 +108,7 @@ function loginCheck() {
         redirectUrl: redirectUri
     }
 
-    axios.post(baseUrl + '/oauth/token', postData)
+    axios.post('/oauth/token', postData)
         .then(response => {
             let result = response.data;
             let token = result.access_token;

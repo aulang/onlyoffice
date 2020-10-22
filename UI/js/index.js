@@ -1,5 +1,3 @@
-let baseUrl = 'http://office.aulang.cn';
-
 let fileTypes = ['.doc', '.docx', '.odt', '.txt', '.xls', '.xlsx', '.ods', '.csv', '.ppt', '.pptx', '.odt'];
 
 let index = new Vue({
@@ -40,7 +38,7 @@ let index = new Vue({
             let formData = new FormData();
             formData.append('file', e.target.files[0]);
 
-            axios.post(baseUrl + '/api/doc', formData, config)
+            axios.post('/api/doc', formData, config)
                 .then(response => {
                     let result = response.data;
 
@@ -54,7 +52,7 @@ let index = new Vue({
             window.open('./editor.html?id=' + id, '_blank').focus();
         },
         download: function (id) {
-            axios.get(baseUrl + '/api/doc/' + id)
+            axios.get('/api/doc/' + id)
                 .then(response => {
                     let result = response.data;
 
@@ -71,7 +69,7 @@ let index = new Vue({
         del: function (id, name) {
             let flag = confirm('确认删除【' + name + '】');
             if (flag) {
-                axios.delete(baseUrl + '/api/doc/' + id)
+                axios.delete('/api/doc/' + id)
                     .then(() => {
                         alert('删除成功！');
                         getDocs(index.page, index.pageSize);
@@ -100,7 +98,7 @@ function getDocs(page, pageSize) {
     page = page || 1;
     pageSize = pageSize || 20;
 
-    axios.get(baseUrl + '/api/doc/list', {page: page, pageSize: pageSize})
+    axios.get('/api/doc/list', {page: page, pageSize: pageSize})
         .then(response => {
             let result = response.data;
 
@@ -114,6 +112,7 @@ function getDocs(page, pageSize) {
         });
 }
 
+loginHandle();
 getDocs(1, 20);
 
 let freshFlag = false;
