@@ -22,13 +22,13 @@ public class OAuthTemplate {
     private RestTemplate restTemplate;
     private OAuthProperties properties;
 
-    public Token getToken(String code) {
+    public Token getToken(String code, String redirectUrl) {
         Map<String, String> uriVariables = new HashMap<>(5);
         uriVariables.put("client_id", code);
         uriVariables.put("grant_type", "authorization_code");
         uriVariables.put("code", code);
         uriVariables.put("client_secret", properties.getClientSecret());
-        uriVariables.put("redirect_uri", properties.getRedirectUrl());
+        uriVariables.put("redirect_uri", redirectUrl);
 
         Token token = restTemplate.postForObject(
                 properties.getTokenUrl(),
@@ -36,7 +36,6 @@ public class OAuthTemplate {
                 Token.class,
                 uriVariables
         );
-
 
         return token;
     }

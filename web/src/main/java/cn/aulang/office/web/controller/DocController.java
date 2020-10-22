@@ -1,14 +1,14 @@
 package cn.aulang.office.web.controller;
 
+import cn.aulang.oauth.client.user.User;
+import cn.aulang.oauth.client.user.UserHolder;
 import cn.aulang.office.web.common.Constants;
 import cn.aulang.office.web.converter.DocConverter;
 import cn.aulang.office.web.entity.Doc;
-import cn.aulang.office.web.model.dto.User;
 import cn.aulang.office.web.model.response.PageResponse;
 import cn.aulang.office.web.model.vo.DocVO;
 import cn.aulang.office.web.service.DocService;
 import cn.aulang.office.web.service.StorageService;
-import cn.aulang.office.web.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,15 +46,13 @@ public class DocController {
     @Autowired
     private DocService docService;
     @Autowired
-    private UserService userService;
-    @Autowired
     private DocConverter docConverter;
     @Autowired
     private StorageService storageService;
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> open(@RequestParam("file") MultipartFile file) {
-        User user = userService.currentUser();
+        User user = UserHolder.get();
 
         String name = file.getOriginalFilename();
         try {

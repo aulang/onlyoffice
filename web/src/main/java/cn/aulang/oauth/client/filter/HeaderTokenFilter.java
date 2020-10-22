@@ -2,6 +2,9 @@ package cn.aulang.oauth.client.filter;
 
 import cn.aulang.oauth.client.core.OAuthTemplate;
 import cn.aulang.oauth.client.model.Profile;
+import cn.aulang.oauth.client.user.User;
+import cn.aulang.oauth.client.user.UserDetailsService;
+import cn.aulang.oauth.client.user.UserHolder;
 import cn.aulang.office.web.common.Constants;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +26,7 @@ import java.io.IOException;
 @AllArgsConstructor
 public class HeaderTokenFilter extends OncePerRequestFilter {
     private OAuthTemplate template;
+    private UserDetailsService userService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -36,11 +40,21 @@ public class HeaderTokenFilter extends OncePerRequestFilter {
 
         String token = StringUtils.delete(authorization, Constants.BEARER);
 
+        User user = getSessionUser(request);
+        if (user != null && token.equals(user.getToken())) {
+            UserHolder.set(user);
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         try {
             Profile profile = template.getProfile(token);
-            /**
-             * TODO User对象转换扩展
-             */
+            user = userService.loadUserByProfile(profile);
+
+            user.setToken(token);
+            UserHolder.set(user);
+
+            setSessionUser(request, user);
         } catch (Exception e) {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
             log.error("获取用户信息失败！", e);
@@ -48,5 +62,13 @@ public class HeaderTokenFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    public void setSessionUser(HttpServletRequest request, User user) {
+        request.getSession().setAttribute("SESSION_USER", user);
+    }
+
+    public User getSessionUser(HttpServletRequest request) {
+        return (User) request.getSession().getAttribute("SESSION_USER");
     }
 }

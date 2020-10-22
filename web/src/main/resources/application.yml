@@ -2,11 +2,14 @@ server:
   port: 8082
   http2:
     enabled: true
+  error:
+    whitelabel:
+      enabled: false
 
 spring:
   data:
     mongodb:
-      uri: mongodb://127.0.0.1:27017/office
+      uri: mongodb://adminx:fBjDSpr9-da@10.199.1.210:27027/megcity
 
 minio:
   endpoint: ${MINIO_ENDPOINT:https://play.min.io}
@@ -15,3 +18,12 @@ minio:
 
 onlyoffice:
   secret: ${ONLYOFFICE_SECRET:xxxxxxxxxxxxxxxxxxxxx}
+
+oauth:
+  clientId: xxxxxx
+  clientSecret: xxxxxxxx
+  tokenUrl: https://aulang.cn/oauth/token
+  profileUrl: https://aulang.cn/oauth/api/profile
+  authedUrls:
+    - /doc/*
+    - /office/token

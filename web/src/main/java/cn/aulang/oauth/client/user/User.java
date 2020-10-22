@@ -1,13 +1,13 @@
-package cn.aulang.office.web.model.dto;
+package cn.aulang.oauth.client.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * @author Aulang
+ * @author aulang
  * @email aulang@qq.com
- * @date 2020-10-20 16:11
+ * @date 2020-10-22 10:06
  */
 @Data
 @NoArgsConstructor
@@ -15,4 +15,5 @@ import lombok.NoArgsConstructor;
 public class User {
     private String id;
     private String name;
+    private String token;
 }

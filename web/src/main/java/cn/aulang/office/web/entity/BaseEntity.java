@@ -6,8 +6,8 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * @author wulang
- * @email wulang02@megvii.com
+ * @author Aulang
+ * @email aulang@qq.com
  * @date 2020-10-17 14:26
  */
 @Data

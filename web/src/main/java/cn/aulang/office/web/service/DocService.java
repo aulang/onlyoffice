@@ -1,10 +1,10 @@
 package cn.aulang.office.web.service;
 
+import cn.aulang.oauth.client.user.User;
 import cn.aulang.office.sdk.enums.DocumentStatus;
 import cn.aulang.office.sdk.enums.DocumentType;
 import cn.aulang.office.sdk.util.UUID;
 import cn.aulang.office.web.entity.Doc;
-import cn.aulang.office.web.model.dto.User;
 import cn.aulang.office.web.repository.DocRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
@@ -86,10 +86,12 @@ public class DocService {
             return null;
         }
 
-        String modifierName = null;
+        String modifierName;
         User user = userService.getById(modifierId);
         if (user != null) {
             modifierName = user.getName();
+        } else {
+            modifierName = doc.getCreatorName();
         }
 
         doc.setModifier(modifierId, modifierName);
