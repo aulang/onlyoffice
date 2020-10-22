@@ -1,3 +1,5 @@
+let baseUrl = 'http://office.aulang.cn';
+
 // 允许跨域
 axios.defaults.crossDomain = true;
 // 允许跨域携带Cookie
@@ -11,7 +13,7 @@ axios.defaults.headers.common['Authorization'] = '';
 // 设置Authorization请求头Token
 axios.interceptors.request.use(
     config => {
-        const token = window.sessionStorage.getItem("token");
+        let token = window.sessionStorage.getItem("token");
         token && (config.headers.Authorization = 'Bearer ' + token);
         return config;
     },
@@ -65,4 +67,55 @@ function redirectLoginUrl() {
 
     let url = `https://aulang.cn/oauth/authorize?client_id=${clientId}&response_type=${responseType}&redirect_uri=${encodeRedirectUri}&scope=${scope}&state=${state}`;
     window.location.replace(url);
+}
+
+function urlParam(name) {
+    let search = window.location.search;
+    if (!search) {
+        return null;
+    }
+
+    let query = search.substring(1);
+    let params = query.split('&');
+
+    for (let i = 0; i < params.length; i++) {
+        let pair = params[i].split('=');
+        if (pair[0] === name) {
+            return pair[1];
+        }
+    }
+
+    return null;
+}
+
+function loginCheck() {
+    let code = urlParam('code');
+    let state = urlParam('state');
+
+    if (!code || !state) {
+        return;
+    }
+
+    let currState = window.sessionStorage.getItem('oauth_state');
+    if (state !== currState) {
+        console.warn('不合法的state');
+        return;
+    }
+
+    window.sessionStorage.removeItem('oauth_state');
+
+    let postData = {
+        code: code,
+        redirectUrl: redirectUri
+    }
+
+    axios.post(baseUrl + '/oauth/token', postData)
+        .then(response => {
+            let result = response.data;
+            let token = result.access_token;
+            window.sessionStorage.setItem('token', token);
+        })
+        .catch(error => {
+            alert(error.data || '登录失败！');
+        });
 }
