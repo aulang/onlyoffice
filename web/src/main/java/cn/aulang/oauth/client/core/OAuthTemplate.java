@@ -7,11 +7,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author Aulang
@@ -25,14 +25,18 @@ public class OAuthTemplate {
     private OAuthProperties properties;
 
     public Token getToken(String code, String redirectUrl) {
-        Map<String, String> params = new HashMap<>(5);
-        params.put("client_id", code);
-        params.put("grant_type", "authorization_code");
-        params.put("code", code);
-        params.put("client_secret", properties.getClientSecret());
-        params.put("redirect_uri", redirectUrl);
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>(5);
 
-        HttpEntity httpEntity = new HttpEntity(params);
+        params.add("client_id", code);
+        params.add("grant_type", "authorization_code");
+        params.add("code", code);
+        params.add("client_secret", properties.getClientSecret());
+        params.add("redirect_uri", redirectUrl);
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        HttpEntity httpEntity = new HttpEntity(params, httpHeaders);
 
         try {
             Token token = restTemplate.postForObject(
