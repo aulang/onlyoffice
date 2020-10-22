@@ -27,7 +27,7 @@ public class OAuthTemplate {
     public Token getToken(String code, String redirectUrl) {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>(5);
 
-        params.add("client_id", code);
+        params.add("client_id", properties.getClientId());
         params.add("grant_type", "authorization_code");
         params.add("code", code);
         params.add("client_secret", properties.getClientSecret());
