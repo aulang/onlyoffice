@@ -75,7 +75,14 @@ public class DocController {
 
     @DeleteMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> delete(@PathVariable("id") String id) {
-        docService.delete(id);
+        Doc doc = docService.delete(id);
+
+        try {
+            storageService.remove(doc.getOwner(), doc.getName());
+        } catch (IOException e) {
+            log.error("删除文档文件失败！", e);
+        }
+
         return ResponseEntity.ok(null);
     }
 

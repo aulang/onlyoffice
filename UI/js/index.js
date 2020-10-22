@@ -1,4 +1,4 @@
-loginHandle();
+loginHandle(() => getDocs(1, 20));
 
 let fileTypes = ['.doc', '.docx', '.odt', '.txt', '.xls', '.xlsx', '.ods', '.csv', '.ppt', '.pptx', '.odt'];
 

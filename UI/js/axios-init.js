@@ -40,10 +40,6 @@ axios.interceptors.response.use(
             switch (error.response.status) {
                 // 401: 未登录，跳转登录页面
                 case 401:
-                    redirectLoginUrl();
-                    break;
-                // 403 登录过期，跳转登录页面
-                case 403:
                     // 清除token
                     window.sessionStorage.removeItem("token");
                     redirectLoginUrl();
@@ -86,7 +82,7 @@ function urlParam(name) {
     return null;
 }
 
-function loginHandle() {
+function loginHandle(loginFn) {
     let code = urlParam('code');
     let state = urlParam('state');
 
@@ -98,6 +94,7 @@ function loginHandle() {
             redirectLoginUrl();
         }
 
+        loginFn();
         return;
     }
 
@@ -119,6 +116,8 @@ function loginHandle() {
             let result = response.data;
             let token = result.access_token;
             window.sessionStorage.setItem('token', token);
+
+            loginFn();
         })
         .catch(error => {
             alert(error.data || '登录失败！');

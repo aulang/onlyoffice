@@ -35,8 +35,10 @@ public class DocService {
         return docRepository.findById(id).orElseThrow();
     }
 
-    public void delete(String id) {
+    public Doc delete(String id) {
+        Doc doc = get(id);
         docRepository.deleteById(id);
+        return doc;
     }
 
     public Doc create(String owner, String ownerName, String name) {
