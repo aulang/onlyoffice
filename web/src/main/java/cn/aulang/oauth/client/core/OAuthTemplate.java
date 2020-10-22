@@ -25,19 +25,20 @@ public class OAuthTemplate {
     private OAuthProperties properties;
 
     public Token getToken(String code, String redirectUrl) {
-        Map<String, String> uriVariables = new HashMap<>(5);
-        uriVariables.put("client_id", code);
-        uriVariables.put("grant_type", "authorization_code");
-        uriVariables.put("code", code);
-        uriVariables.put("client_secret", properties.getClientSecret());
-        uriVariables.put("redirect_uri", redirectUrl);
+        Map<String, String> params = new HashMap<>(5);
+        params.put("client_id", code);
+        params.put("grant_type", "authorization_code");
+        params.put("code", code);
+        params.put("client_secret", properties.getClientSecret());
+        params.put("redirect_uri", redirectUrl);
+
+        HttpEntity httpEntity = new HttpEntity(params);
 
         try {
             Token token = restTemplate.postForObject(
                     properties.getTokenUrl(),
-                    null,
-                    Token.class,
-                    uriVariables
+                    httpEntity,
+                    Token.class
             );
             return token;
         } catch (Exception e) {
