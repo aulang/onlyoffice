@@ -40,16 +40,16 @@ dependencies {
             'org.springframework.boot:spring-boot-starter-web',
             'org.springframework.boot:spring-boot-starter-data-mongodb',
 
-            'com.nimbusds:nimbus-jose-jwt:9.0.1',
+            'com.nimbusds:nimbus-jose-jwt:9.1',
             'commons-io:commons-io:2.8.0',
             'io.minio:minio:7.1.4'
     )
     compileOnly(
-            'org.projectlombok:lombok',
+            'org.projectlombok:lombok:1.18.16',
             'org.mapstruct:mapstruct:1.4.1.Final',
     )
     annotationProcessor(
-            'org.projectlombok:lombok',
+            'org.projectlombok:lombok:1.18.16',
             'org.mapstruct:mapstruct-processor:1.4.1.Final'
     )
     testImplementation('org.springframework.boot:spring-boot-starter-test') {

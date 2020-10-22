@@ -13,8 +13,8 @@ spring:
       uri: mongodb://127.0.0.1:27017/office
   servlet:
     multipart:
-      max-file-size: 8M
-      max-request-size: 16M
+      max-file-size: 8MB
+      max-request-size: 16MB
 
 minio:
   endpoint: ${MINIO_ENDPOINT:https://play.min.io}
