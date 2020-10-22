@@ -56,7 +56,7 @@ function redirectLoginUrl() {
     let scope = 'basic';
     let responseType = 'code';
 
-    let state = Math.random().toString(36).slice(0, 6);
+    let state = random(6);
     window.sessionStorage.setItem('oauth_state', state);
 
     let url = `https://aulang.cn/oauth/authorize?client_id=${clientId}&response_type=${responseType}&redirect_uri=${redirectUri}&scope=${scope}&state=${state}`;
@@ -80,6 +80,15 @@ function urlParam(name) {
     }
 
     return null;
+}
+
+function random(length) {
+    let str = Math.random().toString(36).substr(2);
+    if (str.length >= length) {
+        return str.substr(0, length);
+    }
+    str += random(length - str.length);
+    return str;
 }
 
 function loginHandle(loginFn) {
