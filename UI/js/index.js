@@ -1,3 +1,5 @@
+loginHandle();
+
 let fileTypes = ['.doc', '.docx', '.odt', '.txt', '.xls', '.xlsx', '.ods', '.csv', '.ppt', '.pptx', '.odt'];
 
 let index = new Vue({
@@ -111,9 +113,6 @@ function getDocs(page, pageSize) {
             alert(error.data || '加载文件列表失败');
         });
 }
-
-loginHandle();
-getDocs(1, 20);
 
 let freshFlag = false;
 window.onfocus = function () {

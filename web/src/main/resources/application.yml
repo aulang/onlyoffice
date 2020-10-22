@@ -9,7 +9,7 @@ server:
 spring:
   data:
     mongodb:
-      uri: mongodb://adminx:fBjDSpr9-da@10.199.1.210:27027/megcity
+      uri: mongodb://127.0.0.1:27017/office
 
 minio:
   endpoint: ${MINIO_ENDPOINT:https://play.min.io}
@@ -20,8 +20,8 @@ onlyoffice:
   secret: ${ONLYOFFICE_SECRET:xxxxxxxxxxxxxxxxxxxxx}
 
 oauth:
-  clientId: xxxxxx
-  clientSecret: xxxxxxxx
+  clientId: ${OAUTH_CLIENTID:xxxxxx}
+  clientSecret: ${OAUTH_SECRET:xxxxxxxx}
   tokenUrl: https://aulang.cn/oauth/token
   profileUrl: https://aulang.cn/oauth/api/profile
   authedUrls:

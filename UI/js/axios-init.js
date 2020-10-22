@@ -1,13 +1,13 @@
-let clientId = 'xxxxx';
+let clientId = '5f37d9f4c4155cda795f8fe5';
 let redirectUri = 'http://office.aulang.cn/index.html';
-let baseUrl = 'http://office.aulang.cn';
+let baseUrl = 'http://localhost:8082';
 
 // 配置请求baseURL
 axios.defaults.baseURL = baseUrl;
 // 允许跨域
 axios.defaults.crossDomain = true;
 // 允许跨域携带Cookie
-axios.defaults.withCredentials = true;
+axios.defaults.withCredentials = false;
 // 设置请求头为 Authorization
 axios.defaults.headers.common['Authorization'] = '';
 
@@ -92,6 +92,13 @@ function loginHandle() {
     let state = urlParam('state');
 
     if (!code || !state) {
+        let token = window.sessionStorage.getItem("token");
+
+        if (!token) {
+            // 未登录，进行登录
+            redirectLoginUrl();
+        }
+
         return;
     }
 

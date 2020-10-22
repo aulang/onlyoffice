@@ -12,6 +12,7 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -46,13 +47,14 @@ public class OAuthConfig {
 
     @Bean
     @Autowired
-    public FilterRegistrationBean registerHeaderTokenFilter(UserDetailsService userDetailsService, OAuthTemplate authTemplate) {
+    public FilterRegistrationBean<HeaderTokenFilter> registerHeaderTokenFilter(UserDetailsService userDetailsService,
+                                                                               OAuthTemplate authTemplate) {
         HeaderTokenFilter authFilter = new HeaderTokenFilter(authTemplate, userDetailsService);
 
         FilterRegistrationBean registration = new FilterRegistrationBean();
-        registration.setOrder(1);
         registration.setFilter(authFilter);
         registration.setName("headerTokenFilter");
+        registration.setOrder(Ordered.HIGHEST_PRECEDENCE);
         registration.addUrlPatterns(properties.getAuthedUrls());
 
         return registration;
