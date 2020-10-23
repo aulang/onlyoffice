@@ -54,8 +54,7 @@ public class DocController {
     public ResponseEntity<Object> open(@RequestParam("file") MultipartFile file) {
         User user = UserHolder.get();
 
-        String name = file.getOriginalFilename();
-        String filename = URLEncoder.encode(name, StandardCharsets.UTF_8);
+        String filename = file.getOriginalFilename();
         try {
             storageService.put(user.getId(), filename, file.getInputStream(), file.getSize());
         } catch (Exception e) {

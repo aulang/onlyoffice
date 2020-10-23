@@ -5,7 +5,10 @@ server:
   error:
     whitelabel:
       enabled: false
-
+  servlet:
+    encoding:
+      force: true
+      charset: UTF-8
 
 spring:
   data:
