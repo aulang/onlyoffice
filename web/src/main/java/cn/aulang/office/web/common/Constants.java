@@ -12,4 +12,6 @@ public interface Constants {
 
     String BEARER = "Bearer ";
     String AUTHORIZATION = "Authorization";
+
+    String ACCESS_TOKEN = "access_token";
 }

@@ -49,18 +49,20 @@ public class HeaderTokenFilter extends OncePerRequestFilter {
             return;
         }
 
+        String token = request.getParameter(Constants.ACCESS_TOKEN);
         String authorization = request.getHeader(Constants.AUTHORIZATION);
 
-        if (StringUtils.isEmpty(authorization)) {
-            String token = request.getParameter("access_token");
-
-            if (StringUtils.isEmpty(token)) {
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                return;
-            }
+        /**
+         * 以Header为准
+         */
+        if (!StringUtils.isEmpty(authorization)) {
+            token = StringUtils.delete(authorization, Constants.BEARER);
         }
 
-        String token = StringUtils.delete(authorization, Constants.BEARER);
+        if (StringUtils.isEmpty(token)) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+        }
 
         User user = getSessionUser(request);
         if (user != null && token.equals(user.getToken())) {
