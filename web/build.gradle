@@ -40,6 +40,8 @@ dependencies {
             'org.springframework.boot:spring-boot-starter-web',
             'org.springframework.boot:spring-boot-starter-data-mongodb',
 
+            'commons-io:commons-io:2.8.0',
+            'commons-fileupload:commons-fileupload:1.4',
             'com.nimbusds:nimbus-jose-jwt:9.1',
             'commons-io:commons-io:2.8.0',
             'io.minio:minio:7.1.4'

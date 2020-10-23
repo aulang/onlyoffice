@@ -19,6 +19,7 @@ spring:
     multipart:
       max-file-size: 8MB
       max-request-size: 16MB
+      resolve-lazily: true
 
 minio:
   endpoint: ${MINIO_ENDPOINT:https://play.min.io}
