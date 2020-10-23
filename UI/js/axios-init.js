@@ -15,7 +15,7 @@ axios.defaults.headers.common['Authorization'] = '';
 // 设置Authorization请求头Token
 axios.interceptors.request.use(
     config => {
-        let token = window.sessionStorage.getItem("token");
+        let token = window.localStorage.getItem("token");
         token && (config.headers.Authorization = 'Bearer ' + token);
         return config;
     },
@@ -41,7 +41,7 @@ axios.interceptors.response.use(
                 // 401: 未登录，跳转登录页面
                 case 401:
                     // 清除token
-                    window.sessionStorage.removeItem("token");
+                    window.localStorage.removeItem("token");
                     redirectLoginUrl();
                     break;
                 default:
@@ -57,7 +57,7 @@ function redirectLoginUrl() {
     let responseType = 'code';
 
     let state = random(6);
-    window.sessionStorage.setItem('oauth_state', state);
+    window.localStorage.setItem('oauth_state', state);
 
     let url = `https://aulang.cn/oauth/authorize?client_id=${clientId}&response_type=${responseType}&redirect_uri=${redirectUri}&scope=${scope}&state=${state}`;
     window.location.replace(url);
@@ -92,7 +92,7 @@ function random(length) {
 }
 
 function loginHandle(loginFn) {
-    let token = window.sessionStorage.getItem("token");
+    let token = window.localStorage.getItem("token");
     if (token) {
         // 已登录
         loginFn();
@@ -108,7 +108,7 @@ function loginHandle(loginFn) {
         return;
     }
 
-    let currState = window.sessionStorage.getItem('oauth_state');
+    let currState = window.localStorage.getItem('oauth_state');
     if (state !== currState) {
         // 不合法的state
         alert('不合法的state！');
@@ -116,7 +116,7 @@ function loginHandle(loginFn) {
         return;
     }
 
-    window.sessionStorage.removeItem('oauth_state');
+    window.localStorage.removeItem('oauth_state');
 
     let params = {
         code: code,
@@ -128,7 +128,7 @@ function loginHandle(loginFn) {
             // 登录成功
             let result = response.data;
             let token = result.access_token;
-            window.sessionStorage.setItem('token', token);
+            window.localStorage.setItem('token', token);
 
             loginFn();
         })

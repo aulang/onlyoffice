@@ -88,7 +88,7 @@ let index = new Vue({
 });
 
 function downloadFile(url) {
-    let token = window.sessionStorage.getItem("token");
+    let token = window.localStorage.getItem("token");
     let a = document.createElement('a');
     a.href = url + '?access_token=' + token;
     a.style.display = 'none';
