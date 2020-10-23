@@ -55,14 +55,15 @@ public class DocController {
         User user = UserHolder.get();
 
         String name = file.getOriginalFilename();
+        String filename = URLEncoder.encode(name, StandardCharsets.UTF_8);
         try {
-            storageService.put(user.getId(), name, file.getInputStream(), file.getSize());
+            storageService.put(user.getId(), filename, file.getInputStream(), file.getSize());
         } catch (Exception e) {
             log.error("文件上传失败：{}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("文件上传失败！");
         }
 
-        Doc doc = docService.create(user.getId(), user.getName(), name);
+        Doc doc = docService.create(user.getId(), user.getName(), filename);
 
         return ResponseEntity.ok(docConverter.toVO(doc));
     }
@@ -104,7 +105,8 @@ public class DocController {
             pageSize = 20;
         }
 
-        Page<Doc> docs = docService.search(name, fileType, page, pageSize);
+        User user = UserHolder.get();
+        Page<Doc> docs = docService.search(name, fileType, page, pageSize, user.getId());
 
         PageResponse<DocVO> response = PageResponse.of(
                 docs.getNumber() + 1,

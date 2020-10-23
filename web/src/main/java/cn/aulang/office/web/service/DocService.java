@@ -59,8 +59,10 @@ public class DocService {
         return docRepository.save(doc);
     }
 
-    public Page<Doc> search(String name, String fileType, int page, int pageSize) {
+    public Page<Doc> search(String name, String fileType, int page, int pageSize, String owner) {
         Doc doc = new Doc();
+
+        doc.setOwner(owner);
 
         if (!StringUtils.isEmpty(name)) {
             doc.setName(name);
