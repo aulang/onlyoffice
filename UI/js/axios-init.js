@@ -92,24 +92,27 @@ function random(length) {
 }
 
 function loginHandle(loginFn) {
+    let token = window.sessionStorage.getItem("token");
+    if (token) {
+        // 已登录
+        loginFn();
+        return;
+    }
+
     let code = urlParam('code');
     let state = urlParam('state');
 
     if (!code || !state) {
-        let token = window.sessionStorage.getItem("token");
-
-        if (!token) {
-            // 未登录，进行登录
-            redirectLoginUrl();
-        }
-
-        loginFn();
+        // 未登录没有code和state
+        redirectLoginUrl();
         return;
     }
 
     let currState = window.sessionStorage.getItem('oauth_state');
     if (state !== currState) {
-        console.warn('不合法的state');
+        // 不合法的state
+        alert('不合法的state！');
+        redirectLoginUrl();
         return;
     }
 
@@ -122,6 +125,7 @@ function loginHandle(loginFn) {
 
     axios.get('/api/oauth/token', {params: params})
         .then(response => {
+            // 登录成功
             let result = response.data;
             let token = result.access_token;
             window.sessionStorage.setItem('token', token);
@@ -129,6 +133,8 @@ function loginHandle(loginFn) {
             loginFn();
         })
         .catch(error => {
+            // 登录失败
             alert(error.data || '登录失败！');
+            redirectLoginUrl();
         });
 }
