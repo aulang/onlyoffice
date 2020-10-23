@@ -52,8 +52,12 @@ public class HeaderTokenFilter extends OncePerRequestFilter {
         String authorization = request.getHeader(Constants.AUTHORIZATION);
 
         if (StringUtils.isEmpty(authorization)) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            return;
+            String token = request.getParameter("access_token");
+
+            if (StringUtils.isEmpty(token)) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                return;
+            }
         }
 
         String token = StringUtils.delete(authorization, Constants.BEARER);
