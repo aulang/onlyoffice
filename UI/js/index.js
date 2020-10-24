@@ -1,6 +1,6 @@
 loginHandle(() => getDocs(1, 20));
 
-let fileTypes = ['.doc', '.docx', '.odt', '.txt', '.xls', '.xlsx', '.ods', '.csv', '.ppt', '.pptx', '.odt'];
+let fileTypes = ['.docx', '.xlsx', '.pptx'];
 
 let index = new Vue({
     el: '#index',
