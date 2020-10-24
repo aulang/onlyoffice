@@ -121,7 +121,7 @@ function loginHandle(loginFunc) {
     // 清空state
     ttlLocalStorage.removeItem('oauth_state');
     // 登录成功
-    ttlLocalStorage.setItem('access_token', token);
+    ttlLocalStorage.setItem('access_token', access_token, parseInt(expires_in));
     // 清空URL参数
     window.history.replaceState({}, '', redirectUri);
     // 登录成功执行操作
