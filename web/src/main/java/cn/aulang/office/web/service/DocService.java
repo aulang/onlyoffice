@@ -90,16 +90,25 @@ public class DocService {
             return null;
         }
 
-        String modifierName;
-        User user = userService.getById(modifierId);
-        if (user != null) {
-            modifierName = user.getName();
-        } else {
-            modifierName = doc.getCreatorName();
+        // 更新人ID不为空才更新
+        if (modifierId != null) {
+            String modifierName;
+            User user = userService.getById(modifierId);
+            if (user != null) {
+                modifierName = user.getName();
+            } else {
+                modifierName = doc.getCreatorName();
+            }
+            doc.setModifier(modifierId, modifierName);
         }
 
-        doc.setModifier(modifierId, modifierName);
         doc.setStatus(status.name());
+
+        // 保存文档要更新key
+        if (DocumentStatus.saved == status) {
+            doc.setKey(UUID.generate());
+        }
+
         return docRepository.save(doc);
     }
 }
