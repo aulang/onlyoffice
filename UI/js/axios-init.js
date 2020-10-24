@@ -132,7 +132,7 @@ function loginHandle(loginFunc) {
 const ttlLocalStorage = {
     setItem: function (key, value, ttl) {
         let expires = null;
-        if (Number.isNaN(ttl)) {
+        if (!Number.isNaN(ttl)) {
             expires = new Date().getTime() + ttl * 1000;
         }
 
@@ -151,14 +151,17 @@ const ttlLocalStorage = {
             return null;
         }
 
-        let date = new Date().getTime();
         let obj = JSON.parse(item);
-        if (date > obj.expires) {
-            window.localStorage.removeItem(name);
-            return null;
-        } else {
-            return obj.value;
+
+        if (obj.expires) {
+            let date = new Date().getTime();
+            if (date > obj.expires) {
+                window.localStorage.removeItem(name);
+                return null;
+            }
         }
+
+        return obj.value;
     },
     removeItem: function (key) {
         window.localStorage.removeItem(key);
