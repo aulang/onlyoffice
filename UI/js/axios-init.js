@@ -15,7 +15,7 @@ axios.defaults.headers.common['Authorization'] = '';
 // 设置Authorization请求头Token
 axios.interceptors.request.use(
     config => {
-        let token = window.localStorage.getItem("token");
+        let token = ttlLocalStorage.getItem('access_token');
         token && (config.headers.Authorization = 'Bearer ' + token);
         return config;
     },
@@ -41,7 +41,8 @@ axios.interceptors.response.use(
                 // 401: 未登录，跳转登录页面
                 case 401:
                     // 清除token
-                    window.localStorage.removeItem("token");
+                    ttlLocalStorage.removeItem('access_token');
+                    // 重定向登录页面
                     redirectLoginUrl();
                     break;
                 default:
@@ -52,14 +53,14 @@ axios.interceptors.response.use(
     }
 );
 
+let scope = 'basic';
+let responseType = 'token';
+
 function redirectLoginUrl() {
-    let scope = 'basic';
-    let responseType = 'code';
-
     let state = random(6);
-    window.localStorage.setItem('oauth_state', state);
+    ttlLocalStorage.setItem('oauth_state', state, 600);
 
-    let url = `https://aulang.cn/oauth/authorize?client_id=${clientId}&response_type=${responseType}&redirect_uri=${redirectUri}&scope=${scope}&state=${state}`;
+    let url = `https://aulang.cn/oauth/authorize?client_id=${clientId}&response_type=${responseType}&scope=${scope}&redirect_uri=${redirectUri}&state=${state}`;
     window.location.replace(url);
 }
 
@@ -91,24 +92,25 @@ function random(length) {
     return str;
 }
 
-function loginHandle(loginFn) {
-    let token = window.localStorage.getItem("token");
+function loginHandle(loginFunc) {
+    let token = ttlLocalStorage.getItem('access_token');
     if (token) {
         // 已登录
-        loginFn();
+        loginFunc();
         return;
     }
 
-    let code = urlParam('code');
     let state = urlParam('state');
+    let expires_in = urlParam('access_token');
+    let access_token = urlParam('expires_in');
 
-    if (!code || !state) {
-        // 未登录没有code和state
+    if (!state || !access_token || !expires_in) {
+        // 未登录没有state、access_token和expires_in
         redirectLoginUrl();
         return;
     }
 
-    let currState = window.localStorage.getItem('oauth_state');
+    let currState = ttlLocalStorage.getItem('oauth_state');
     if (state !== currState) {
         // 不合法的state
         alert('不合法的state！');
@@ -116,25 +118,52 @@ function loginHandle(loginFn) {
         return;
     }
 
-    window.localStorage.removeItem('oauth_state');
+    // 清空state
+    ttlLocalStorage.removeItem('oauth_state');
+    // 登录成功
+    ttlLocalStorage.setItem('access_token', token);
+    // 清空URL参数
+    window.history.replaceState({}, '', redirectUri);
+    // 登录成功执行操作
+    loginFunc();
+}
 
-    let params = {
-        code: code,
-        redirectUrl: redirectUri
+// 带TTL的localStorage
+const ttlLocalStorage = {
+    setItem: function (key, value, ttl) {
+        let expires = null;
+        if (Number.isNaN(ttl)) {
+            expires = new Date().getTime() + ttl * 1000;
+        }
+
+        let obj = {
+            key: key,
+            value: value,
+            expires: expires
+        }
+
+        window.localStorage.setItem(key, JSON.stringify(obj));
+    },
+    getItem: function (key) {
+        let item = window.localStorage.getItem(key);
+
+        if (!item) {
+            return null;
+        }
+
+        let date = new Date().getTime();
+        let obj = JSON.parse(item);
+        if (date > obj.expires) {
+            window.localStorage.removeItem(name);
+            return null;
+        } else {
+            return obj.value;
+        }
+    },
+    removeItem: function (key) {
+        window.localStorage.removeItem(key);
+    },
+    clear: function () {
+        window.localStorage.clear();
     }
-
-    axios.get('/api/oauth/token', {params: params})
-        .then(response => {
-            // 登录成功
-            let result = response.data;
-            let token = result.access_token;
-            window.localStorage.setItem('token', token);
-
-            loginFn();
-        })
-        .catch(error => {
-            // 登录失败
-            alert(error.data || '登录失败！');
-            redirectLoginUrl();
-        });
 }

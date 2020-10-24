@@ -88,7 +88,13 @@ let index = new Vue({
 });
 
 function downloadFile(url) {
-    let token = window.localStorage.getItem("token");
+    let token = ttlLocalStorage.getItem("token");
+    if (!token) {
+        alert('登录失效！');
+        redirectLoginUrl();
+        return;
+    }
+
     let a = document.createElement('a');
     a.href = url + '?access_token=' + token;
     a.style.display = 'none';
