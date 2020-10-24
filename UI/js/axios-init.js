@@ -101,8 +101,8 @@ function loginHandle(loginFunc) {
     }
 
     let state = urlParam('state');
-    let expires_in = urlParam('access_token');
-    let access_token = urlParam('expires_in');
+    let expires_in = urlParam('expires_in');
+    let access_token = urlParam('access_token');
 
     if (!state || !access_token || !expires_in) {
         // 未登录没有state、access_token和expires_in
