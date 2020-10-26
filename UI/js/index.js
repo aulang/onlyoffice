@@ -1,4 +1,4 @@
-loginHandle(() => getDocs(1, 20));
+loginHandle(() => getDocs(1, 20, '', ''));
 
 let fileTypes = ['.docx', '.xlsx', '.pptx'];
 
@@ -8,7 +8,10 @@ let index = new Vue({
         page: 1,
         pageSize: 20,
         totalPages: 1,
-        content: []
+        content: [],
+        fileMenu: false,
+        fileType: '',
+        filename: ''
     },
     computed: {
         noPrevious: function () {
@@ -50,6 +53,9 @@ let index = new Vue({
                     alert(error.data || '打开文档失败');
                 });
         },
+        newDoc: function () {
+            alert('暂未开放！');
+        },
         edit: function (id) {
             window.open('./editor.html?id=' + id, '_blank').focus();
         },
@@ -74,7 +80,7 @@ let index = new Vue({
                 axios.delete('/api/doc/' + id)
                     .then(() => {
                         alert('删除成功！');
-                        getDocs(index.page, index.pageSize);
+                        getDocs(index.page, index.pageSize, index.fileType, index.filename);
                     })
                     .catch(error => {
                         alert(error.data || '删除失败');
@@ -82,7 +88,10 @@ let index = new Vue({
             }
         },
         goPage: function (page) {
-            getDocs(page, this.pageSize);
+            getDocs(page, this.pageSize, this.fileType, this.filename);
+        },
+        query: function () {
+            getDocs(1, this.pageSize, this.fileType, this.filename);
         }
     }
 });
@@ -103,11 +112,18 @@ function downloadFile(url) {
     document.body.removeChild(a);
 }
 
-function getDocs(page, pageSize) {
+function getDocs(page, pageSize, fileType, filename) {
     page = page || 1;
     pageSize = pageSize || 20;
 
-    axios.get('/api/doc/list', {page: page, pageSize: pageSize})
+    let params = {
+        page: page,
+        pageSize: pageSize,
+        fileType: fileType,
+        name: filename
+    }
+
+    axios.get('/api/doc/list', {params: params})
         .then(response => {
             let result = response.data;
 
@@ -120,6 +136,7 @@ function getDocs(page, pageSize) {
             alert(error.data || '加载文件列表失败');
         });
 }
+
 
 let freshFlag = false;
 window.onfocus = function () {

@@ -11,14 +11,41 @@
 </head>
 <body>
 <div class="container" id="index">
-    <div class="mt-5">
-        <div class="d-flex justify-content-between">
-            <h4>文档列表</h4>
+    <div class="mt-5" @click="fileMenu = false">
+        <div class="d-flex justify-content-between mb-3">
+            <div class="btn-group">
+                <button type="button" class="btn btn-primary dropdown-toggle" @click.stop="fileMenu = !fileMenu">文件</button>
+                <div class="dropdown-menu" :class="{'d-block':fileMenu}">
+                    <label class="dropdown-item">
+                        <span>打开</span>
+                        <input type="file" accept=".docx,.xlsx,.pptx" class="d-none" @change="open"/>
+                    </label>
+                    <div class="dropdown-divider"></div>
+                    <button class="dropdown-item" type="button" @click="newDoc">新建</button>
+                </div>
+            </div>
 
-            <form enctype="multipart/form-data">
-                <label class="btn btn-primary">打开文档
-                    <input type="file" accept=".docx,.xlsx,.pptx" class="d-none" @change="open"/>
-                </label>
+            <form>
+                <div class="form-row">
+                    <div class="col-4">
+                        <select class="form-control" v-model="fileType">
+                            <option value="">全部</option>
+                            <option value="docx">docx</option>
+                            <option value="xlsx">xlsx</option>
+                            <option value="pptx">pptx</option>
+                        </select>
+                    </div>
+                    <div class="col-8">
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="文件名" v-model="filename">
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" type="button" @click="query">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </form>
         </div>
         <table class="table table-hover">
