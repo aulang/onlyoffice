@@ -26,6 +26,8 @@ if (id) {
     axios.get('/api/doc/' + id)
         .then(response => {
             let result = response.data;
+
+            document.title = result.name;
             let fileUrl = baseUrl + '/api/office/doc/' + id;
 
             config.documentType = result.documentType;
